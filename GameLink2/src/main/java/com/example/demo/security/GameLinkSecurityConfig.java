@@ -1,5 +1,7 @@
 package com.example.demo.security;
 
+import java.util.Arrays;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,8 +19,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import com.example.demo.jwt.JWTAuthenticationFilter;
 
@@ -26,42 +26,15 @@ import com.example.demo.jwt.JWTAuthenticationFilter;
 @EnableWebSecurity
 public class GameLinkSecurityConfig {
 
-	private static final String[] SECURED_ADMIN_URLs = { 
-														"/game/**", 
-														"/user/**", 
-														"/tag/**", 
-														"/party/**",
-														"/message/**",
-														"/game_role/**",
-														"/game_game_role/**",
-														"/user_party_game_role/**",
-														"/swagger-ui/**"};
-	
-	private static final String[] SECURED_USER_URLs = { 
-														"/user/profile",
-														"/user/update",
-														"/game/all", 
-														"/party/all",
-														"/party/id/**",
-														"/party/join/**",
-														"/party/leave/**",
-														"/party/add", 
-														"/party/own", 
-														"/party/own/update/**",
-														"/party/own/delete/**", 
-														"/party/members/**",
-														"/message/party/**",
-														"/message/party/write/**",
-														"/message/id/**",
-														"/message/update/**",
-														"/message/delete/**",
-														"/event/all",
-														"/event/id/**",
-														"/game_role/all",
-														"/game_role/id/**",
-														"/tag/all",
-														"/tag/id/**"};
-	
+	private static final String[] SECURED_ADMIN_URLs = { "/game/**", "/user/**", "/tag/**", "/party/**", "/message/**",
+			"/game_role/**", "/game_game_role/**", "/user_party_game_role/**", "/swagger-ui/**" };
+
+	private static final String[] SECURED_USER_URLs = { "/user/profile", "/user/update", "/game/all", "/party/all",
+			"/party/id/**", "/party/join/**", "/party/leave/**", "/party/add", "/party/own", "/party/own/update/**",
+			"/party/own/delete/**", "/party/members/**", "/message/party/**", "/message/party/write/**",
+			"/message/id/**", "/message/update/**", "/message/delete/**", "/event/all", "/event/id/**",
+			"/game_role/all", "/game_role/id/**", "/tag/all", "/tag/id/**" };
+
 	private static final String[] SECURED_EVENT_MANAGER_URLs = { "/event/**" };
 
 	private static final String[] UN_SECURED_URLs = { "/login/**", "/user/add" };
@@ -84,26 +57,16 @@ public class GameLinkSecurityConfig {
 		authenticationProvider.setPasswordEncoder(passwordEncoder());
 		return authenticationProvider;
 	}
-	
-	@Bean
-	WebMvcConfigurer corsConfig() {
-		return new WebMvcConfigurer() {
-			@Override
-			public void addCorsMappings(CorsRegistry registry) {
-				registry.addMapping("/**").allowedOrigins("*").allowedHeaders("*").allowedMethods("*");
-
-			}
-		};
-	}
 
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-		return http.cors(cors -> corsConfig()).csrf(csrf -> csrf.disable())
+		return http.csrf(csrf -> csrf.disable())
 				.authorizeHttpRequests(auth -> auth.requestMatchers(UN_SECURED_URLs).permitAll()
-						.requestMatchers(SECURED_USER_URLs).hasAnyAuthority("USER", "ADMIN","EVENT_MANAGER")
+						.requestMatchers(SECURED_USER_URLs).hasAnyAuthority("USER", "ADMIN", "EVENT_MANAGER")
 						.requestMatchers(SECURED_EVENT_MANAGER_URLs).hasAnyAuthority("ADMIN", "EVENT_MANAGER")
 						.requestMatchers(SECURED_ADMIN_URLs).hasAuthority("ADMIN").anyRequest().authenticated())
 				.sessionManagement(management -> management.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+				.cors(cors->corsConfigurationSource())
 				.authenticationProvider(authenticationProvider())
 				.addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class).build();
 	}
@@ -116,7 +79,12 @@ public class GameLinkSecurityConfig {
 	@Bean
 	CorsConfigurationSource corsConfigurationSource() {
 		final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-		source.registerCorsConfiguration("/**", new CorsConfiguration().applyPermitDefaultValues());
+		CorsConfiguration config = new CorsConfiguration();
+		config.setAllowedOrigins(Arrays.asList("*"));
+		config.setAllowedMethods(Arrays.asList("GET", "POST", "OPTIONS", "DELETE", "PUT"));
+		config.setAllowCredentials(true);
+		config.setAllowedHeaders(Arrays.asList("Authorization", "Cache-Control", "Content-Type"));
+		source.registerCorsConfiguration("/**", config);
 		return source;
 	}
 }

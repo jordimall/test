@@ -86,13 +86,12 @@ public class GameLinkSecurityConfig {
 
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-		return http.csrf(csrf -> csrf.disable())
+		return http.cors(cors -> new SimpleCORSFilter()).csrf(csrf -> csrf.disable())
 				.authorizeHttpRequests(auth -> auth.requestMatchers(UN_SECURED_URLs).permitAll()
 						.requestMatchers(SECURED_USER_URLs).hasAnyAuthority("USER", "ADMIN","EVENT_MANAGER")
 						.requestMatchers(SECURED_EVENT_MANAGER_URLs).hasAnyAuthority("ADMIN", "EVENT_MANAGER")
 						.requestMatchers(SECURED_ADMIN_URLs).hasAuthority("ADMIN").anyRequest().authenticated())
 				.sessionManagement(management -> management.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-				.cors(cors -> new SimpleCORSFilter())
 				.authenticationProvider(authenticationProvider())
 				.addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class).build();
 	}

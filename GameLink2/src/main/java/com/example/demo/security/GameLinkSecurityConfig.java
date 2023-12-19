@@ -63,7 +63,7 @@ public class GameLinkSecurityConfig {
 		final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
 		CorsConfiguration config = new CorsConfiguration();
 		config.setAllowedOrigins(Arrays.asList("*"));
-		config.setAllowedMethods(Arrays.asList("GET", "POST", "OPTIONS", "DELETE", "PUT"));
+		config.setAllowedMethods(Arrays.asList("GET", "POST", "DELETE", "PUT"));
 		config.setAllowCredentials(true);
 		config.setAllowedHeaders(Arrays.asList("*"));
 		source.registerCorsConfiguration("/**", config);

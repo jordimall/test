@@ -17,9 +17,10 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import com.example.demo.jwt.JWTAuthenticationFilter;
-import com.example.demo.security.SimpleCORSFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -83,16 +84,26 @@ public class GameLinkSecurityConfig {
 		authenticationProvider.setPasswordEncoder(passwordEncoder());
 		return authenticationProvider;
 	}
+	
+	@Bean
+	WebMvcConfigurer corsConfig() {
+		return new WebMvcConfigurer() {
+			@Override
+			public void addCorsMappings(CorsRegistry registry) {
+				registry.addMapping("/**").allowedOrigins("*").allowedHeaders("*").allowedMethods("*");
+
+			}
+		};
+	}
 
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-		return http.csrf(csrf -> csrf.disable())
+		return http.cors(cors -> corsConfig()).csrf(csrf -> csrf.disable())
 				.authorizeHttpRequests(auth -> auth.requestMatchers(UN_SECURED_URLs).permitAll()
 						.requestMatchers(SECURED_USER_URLs).hasAnyAuthority("USER", "ADMIN","EVENT_MANAGER")
 						.requestMatchers(SECURED_EVENT_MANAGER_URLs).hasAnyAuthority("ADMIN", "EVENT_MANAGER")
 						.requestMatchers(SECURED_ADMIN_URLs).hasAuthority("ADMIN").anyRequest().authenticated())
 				.sessionManagement(management -> management.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-
 				.authenticationProvider(authenticationProvider())
 				.addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class).build();
 	}

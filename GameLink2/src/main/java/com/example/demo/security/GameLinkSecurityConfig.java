@@ -62,8 +62,8 @@ public class GameLinkSecurityConfig {
 	CorsConfigurationSource corsConfigurationSource() {
 		final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
 		CorsConfiguration config = new CorsConfiguration();
-		config.setAllowedOrigins(Arrays.asList("http://localhost:4200"));
-		config.setAllowedMethods(Arrays.asList("GET", "POST", "DELETE", "PUT"));
+		config.setAllowedOrigins(Arrays.asList("http://localhost:4200", "https://main.d2oub417gkrd2h.amplifyapp.com/"));
+		config.setAllowedMethods(Arrays.asList("GET", "POST", "OPTIONS","DELETE", "PUT"));
 		config.setAllowedHeaders(Arrays.asList("*"));
 		config.setAllowCredentials(true);
 		source.registerCorsConfiguration("/**", config);

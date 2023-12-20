@@ -50,10 +50,13 @@ public class GameRoleController {
 	}
 
 	@PostMapping("/add")
-	public GameRole saveGameRole(@RequestBody GameRole gameRole,@RequestBody Game[] games) {
+	public GameRole saveGameRole(@RequestBody GameRole gameRole) {
 		GameRole newGameRole= gameRoleService.add(gameRole);
-		for (int i = 0; i < games.length; i++) {
-			GameGameRole newGameGameRole= new GameGameRole(games[i], newGameRole, 1);
+		for (int i = 0; i < gameRole.getGameGameRole().size(); i++) {
+			GameGameRole newGameGameRole= new GameGameRole();
+			newGameGameRole.setIdGame(gameRole.getGameGameRole().get(i).getIdGame());
+			newGameGameRole.setIdGameRole(newGameRole);
+			newGameGameRole.setQuantity(1);
 			gameGameRoleService.add(newGameGameRole);
 		}
 		return newGameRole;

@@ -10,5 +10,5 @@ public interface IGameGameRoleDAO extends JpaRepository<GameGameRole, Integer>{
 
 	Optional<GameGameRole> findByIdGameRoleId(int idGameRole);
 	Optional<GameGameRole> findByIdGameId(int idGame);
-	Optional<GameGameRole> findByGameIdAndGameRoleId(int idGame, int idGameRole);
+	Optional<GameGameRole> findByIdGameIdAndIdGameRoleId(int idGame, int idGameRole);
 }

@@ -18,8 +18,8 @@ public interface IGameGameRoleService {
 	public void deleteOne(int id);
 
 	public GameGameRole findByIdGameRoleId(int idGameRole);
-	
+
 	public GameGameRole findByIdGameId(int idGame);
-	
-	public GameGameRole findByGameIdAndGameRoleId(int idGame,int idGameRole);
+
+	public GameGameRole findByIdGameIdAndIdGameRoleId(int idGame, int idGameRole);
 }

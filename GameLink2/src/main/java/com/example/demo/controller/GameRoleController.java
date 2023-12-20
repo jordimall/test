@@ -32,8 +32,6 @@ public class GameRoleController {
 	@Autowired(required = true)
 	GameGameRoleService gameGameRoleService;
 
-
-
 	@GetMapping("/all")
 	public ResponseEntity<Page<GameRole>> listAllGameRoles(
 			@RequestParam(name = "idGame", required = false) Integer idGame, @RequestParam(defaultValue = "0") int page,
@@ -52,8 +50,7 @@ public class GameRoleController {
 	public GameRole saveGameRole(@RequestBody GameRole gameRole) {
 		GameRole newGameRole = gameRoleService.add(gameRole);
 		for (int i = 0; i < gameRole.getGameGameRole().size(); i++) {
-			GameGameRole gameGameRole = new GameGameRole(gameRole.getGameGameRole().get(i).getIdGame(), newGameRole,
-					1);
+			GameGameRole gameGameRole = new GameGameRole(gameRole.getGameGameRole().get(i).getIdGame(), newGameRole, 1);
 			gameGameRoleService.add(gameGameRole);
 		}
 		return newGameRole;
@@ -76,16 +73,17 @@ public class GameRoleController {
 		preGameRole.setIcon_url(gameRole.getIcon_url());
 		preGameRole.setName(gameRole.getName());
 		preGameRole.setDescription(gameRole.getDescription());
-		
-		for (int i = 0; i < gameRole.getGameGameRole().size(); i++) {
-			pregameGameRole = gameGameRoleService.findByGameIdAndGameRoleId(gameRole.getGameGameRole().get(i).getIdGame().getId(), id);
 
-			if(pregameGameRole != null) {
+		for (int i = 0; i < gameRole.getGameGameRole().size(); i++) {
+			pregameGameRole = gameGameRoleService
+					.findByIdGameIdAndIdGameRoleId(gameRole.getGameGameRole().get(i).getIdGame().getId(), id);
+
+			if (pregameGameRole != null) {
 				newgameGameRole.setIdGame(gameRole.getGameGameRole().get(i).getIdGame());
 				newgameGameRole.setIdGameRole(newGameRole);
 				gameGameRoleService.add(newgameGameRole);
 			}
-			
+
 		}
 
 		newGameRole = gameRoleService.update(preGameRole);

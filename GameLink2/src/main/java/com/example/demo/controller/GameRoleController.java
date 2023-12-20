@@ -18,6 +18,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 import com.example.demo.dto.Game;
 import com.example.demo.dto.GameGameRole;
 import com.example.demo.dto.GameRole;
@@ -35,6 +38,12 @@ public class GameRoleController {
 	@Autowired(required = true)
 	GameGameRoleService gameGameRoleService;
 	
+	private final Logger log = LoggerFactory.getLogger(GameGameRoleController.class);
+	
+	public void GameGameRoleController() {
+	    log.info("SimpleCORSFilter init");
+	}
+	
 	@GetMapping("/all")
 	public ResponseEntity<Page<GameRole>> listAllGameRoles(@RequestParam(name = "idGame", required = false) Integer idGame,
 														   @RequestParam(defaultValue = "0") int page,
@@ -51,6 +60,7 @@ public class GameRoleController {
 
 	@PostMapping("/add")
 	public GameRole saveGameRole(@RequestBody GameRole gameRole) {
+		log.info("GameRole", gameRole);
 		GameRole newGameRole= gameRoleService.add(gameRole);
 		for (int i = 0; i < gameRole.getGameGameRole().size(); i++) {
 			GameGameRole newGameGameRole= new GameGameRole();

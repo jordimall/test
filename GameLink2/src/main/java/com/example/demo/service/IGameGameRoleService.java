@@ -20,4 +20,6 @@ public interface IGameGameRoleService {
 	public GameGameRole findByIdGameRoleId(int idGameRole);
 	
 	public GameGameRole findByIdGameId(int idGame);
+	
+	public GameGameRole findByGameIdAndGameRoleId(int idGame,int idGameRole);
 }

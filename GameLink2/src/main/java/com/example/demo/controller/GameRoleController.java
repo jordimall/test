@@ -1,7 +1,5 @@
 package com.example.demo.controller;
 
-import java.util.Iterator;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -18,10 +16,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
-import com.example.demo.dto.Game;
 import com.example.demo.dto.GameGameRole;
 import com.example.demo.dto.GameRole;
 import com.example.demo.service.GameGameRoleService;
@@ -31,28 +25,24 @@ import com.example.demo.service.GameRoleService;
 @RestController
 @RequestMapping("/game_role")
 public class GameRoleController {
-	
+
 	@Autowired(required = true)
 	GameRoleService gameRoleService;
-	
+
 	@Autowired(required = true)
 	GameGameRoleService gameGameRoleService;
-	
-	private final Logger log = LoggerFactory.getLogger(GameGameRoleController.class);
-	
-	public void GameGameRoleController() {
-	    log.info("SimpleCORSFilter init");
-	}
-	
+
+
+
 	@GetMapping("/all")
-	public ResponseEntity<Page<GameRole>> listAllGameRoles(@RequestParam(name = "idGame", required = false) Integer idGame,
-														   @RequestParam(defaultValue = "0") int page,
-														   @RequestParam(defaultValue = "10") int size) {
+	public ResponseEntity<Page<GameRole>> listAllGameRoles(
+			@RequestParam(name = "idGame", required = false) Integer idGame, @RequestParam(defaultValue = "0") int page,
+			@RequestParam(defaultValue = "10") int size) {
 
 		Page<GameRole> departamentoPage = gameRoleService.getPaginatedGameRole(PageRequest.of(page, size));
-		
+
 		if (idGame != null) {
-			departamentoPage = gameRoleService.findGameRoleByGameId(PageRequest.of(page, size),idGame);
+			departamentoPage = gameRoleService.findGameRoleByGameId(PageRequest.of(page, size), idGame);
 		}
 
 		return new ResponseEntity<>(departamentoPage, HttpStatus.OK);
@@ -60,14 +50,11 @@ public class GameRoleController {
 
 	@PostMapping("/add")
 	public GameRole saveGameRole(@RequestBody GameRole gameRole) {
-		log.info("GameRole", gameRole);
-		GameRole newGameRole= gameRoleService.add(gameRole);
+		GameRole newGameRole = gameRoleService.add(gameRole);
 		for (int i = 0; i < gameRole.getGameGameRole().size(); i++) {
-			GameGameRole newGameGameRole= new GameGameRole();
-			newGameGameRole.setIdGame(gameRole.getGameGameRole().get(i).getIdGame());
-			newGameGameRole.setIdGameRole(newGameRole);
-			newGameGameRole.setQuantity(1);
-			gameGameRoleService.add(newGameGameRole);
+			GameGameRole gameGameRole = new GameGameRole(gameRole.getGameGameRole().get(i).getIdGame(), newGameRole,
+					1);
+			gameGameRoleService.add(gameGameRole);
 		}
 		return newGameRole;
 	}

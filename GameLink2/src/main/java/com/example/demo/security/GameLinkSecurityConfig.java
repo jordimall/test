@@ -26,14 +26,43 @@ import com.example.demo.jwt.JWTAuthenticationFilter;
 @EnableWebSecurity
 public class GameLinkSecurityConfig {
 
-	private static final String[] SECURED_ADMIN_URLs = { "/game/**", "/user/**", "/tag/**", "/party/**", "/message/**",
-			"/game_role/**", "/game_game_role/**", "/user_party_game_role/**", "/swagger-ui/**" };
+	private static final String[] SECURED_ADMIN_URLs = { 
+			"/game/**", 
+			"/user/**", 
+			"/tag/**", 
+			"/party/**", 
+			"/message/**",
+			"/game_role/**", 
+			"/game_game_role/**", 
+			"/user_party_game_role/**", 
+			"/swagger-ui/**" 
+	};
 
-	private static final String[] SECURED_USER_URLs = { "/user/profile", "/user/update", "/game/all", "/party/all",
-			"/party/id/**", "/party/join/**", "/party/leave/**", "/party/add", "/party/own", "/party/own/update/**",
-			"/party/own/delete/**", "/party/members/**", "/message/party/**", "/message/party/write/**",
-			"/message/id/**", "/message/update/**", "/message/delete/**", "/event/all", "/event/id/**",
-			"/game_role/all", "/game_role/id/**", "/tag/all", "/tag/id/**" };
+	private static final String[] SECURED_USER_URLs = { 
+			"/user/profile", 
+			"/user/update", 
+			"/game/all", 
+			"/party/all",
+			"/party/id/**", 
+			"/party/join/**", 
+			"/party/leave/**", 
+			"/party/add", 
+			"/party/own", 
+			"/party/own/update/**",
+			"/party/own/delete/**", 
+			"/party/members/**", 
+			"/message/party/**", 
+			"/message/party/write/**",
+			"/message/id/**", 
+			"/message/update/**", 
+			"/message/delete/**", 
+			"/event/all", 
+			"/event/id/**",
+			"/game_role/all", 
+			"/game_role/id/**", 
+			"/tag/all", 
+			"/tag/id/**" 
+	};
 
 	private static final String[] SECURED_EVENT_MANAGER_URLs = { "/event/**" };
 

@@ -1,5 +1,7 @@
 package com.example.demo.controller;
 
+import java.util.Iterator;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -16,6 +18,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.demo.dto.Game;
+import com.example.demo.dto.GameGameRole;
 import com.example.demo.dto.GameRole;
 import com.example.demo.service.GameGameRoleService;
 import com.example.demo.service.GameRoleService;
@@ -46,8 +50,13 @@ public class GameRoleController {
 	}
 
 	@PostMapping("/add")
-	public GameRole saveGameRole(@RequestBody GameRole gameRole) {
-		return gameRoleService.add(gameRole);
+	public GameRole saveGameRole(@RequestBody GameRole gameRole,@RequestBody Game[] games) {
+		GameRole newGameRole= gameRoleService.add(gameRole);
+		for (int i = 0; i < games.length; i++) {
+			GameGameRole newGameGameRole= new GameGameRole(games[i], newGameRole, 1);
+			gameGameRoleService.add(newGameGameRole);
+		}
+		return newGameRole;
 	}
 
 	@GetMapping("/id/{id}")
